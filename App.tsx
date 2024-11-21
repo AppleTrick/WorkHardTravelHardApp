@@ -7,17 +7,36 @@ import { Fontisto } from '@expo/vector-icons';
 
 interface ToDo {
   text: string;
-  work: boolean;
+  pageLocation: string;
 }
 
+type TPageLocation = 'work' | 'travel';
+
 const STORAGE_KEY = '@toDos';
+const PAGELOCATION = '@pageLocation';
 
 export default function App() {
-  const [working, setWorking] = useState(true);
+  const [pageLoaction, setPageLoacation] = useState<TPageLocation>('work');
   const [text, setText] = useState('');
   const [toDos, setToDos] = useState<Record<string, ToDo>>({});
-  const travel = () => setWorking(false);
-  const work = () => setWorking(true);
+
+  const travel = async () => {
+    setPageLoacation('travel');
+    try {
+      await AsyncStorage.setItem(PAGELOCATION, JSON.stringify('travel'));
+    } catch (error) {
+      /// save error
+    }
+  };
+
+  const work = async () => {
+    setPageLoacation('work');
+    try {
+      await AsyncStorage.setItem(PAGELOCATION, JSON.stringify('work'));
+    } catch (error) {
+      /// save error
+    }
+  };
   const onChangeText = (payload: string) => setText(payload);
 
   const saveToDos = async (toSave: Record<string, ToDo>) => {
@@ -40,6 +59,18 @@ export default function App() {
       console.error('Failed to load todos:', error);
       setToDos({}); // 에러 발생 시 초기값 설정
     }
+
+    try {
+      const location = await AsyncStorage.getItem(PAGELOCATION);
+      if (location) {
+        setPageLoacation(JSON.parse(location));
+      } else {
+        setPageLoacation('work'); // 또는 초기값 설정
+      }
+    } catch (error) {
+      console.error('Failed to load todos:', error);
+      setPageLoacation('work'); // 에러 발생 시 초기값 설정
+    }
   };
 
   useEffect(() => {
@@ -50,10 +81,7 @@ export default function App() {
     if (text == '') {
       return;
     }
-    // const newToDos = Object.assign({}, toDos, {
-    //   [Date.now()]: { text, work: working },
-    // });
-    const newToDos = { ...toDos, [Date.now()]: { text, work: working } };
+    const newToDos = { ...toDos, [Date.now()]: { text, pageLocation: pageLoaction } };
     setToDos(newToDos);
     await saveToDos(newToDos);
     setText('');
@@ -67,7 +95,7 @@ export default function App() {
         style: 'destructive',
         onPress: async () => {
           const newToDos = { ...toDos };
-          delete newToDos[key];
+          delete newToDos['1732179583064'];
           setToDos(newToDos);
           await saveToDos(newToDos);
         },
@@ -75,37 +103,19 @@ export default function App() {
     ]);
   };
 
-  // console.log(toDos);
+  console.log(toDos);
+  console.log(pageLoaction);
 
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
-          <Text style={{ ...styles.btnText, color: working ? 'white' : theme.grey }}>Work</Text>
+          <Text style={{ ...styles.btnText, color: pageLoaction === 'work' ? 'white' : theme.grey }}>Work</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={travel}>
-          <Text style={{ ...styles.btnText, color: !working ? 'white' : theme.grey }}>Travel</Text>
+          <Text style={{ ...styles.btnText, color: pageLoaction === 'travel' ? 'white' : theme.grey }}>Travel</Text>
         </TouchableOpacity>
-        {/* 하이라이트 변화를 줄수있는 버튼 */}
-        {/* <TouchableHighlight
-          underlayColor="red"
-          activeOpacity={0.5}
-          onPress={() => {
-            console.log('hi');
-          }}
-        >
-          <Text style={styles.btnText}>Travel</Text>
-        </TouchableHighlight> */}
-
-        {/* 터치를 하면 UI 적으로 변화는 없지만 반응을 볼수 있는 버튼 컴포넌트 */}
-        {/* <TouchableWithoutFeedback
-          onPress={() => {
-            console.log('pressed');
-          }}
-        >
-          <Text style={styles.btnText}>Travel</Text>
-        </TouchableWithoutFeedback> */}
       </View>
       <View>
         <TextInput
@@ -114,12 +124,12 @@ export default function App() {
           onSubmitEditing={addToDo}
           onChangeText={onChangeText}
           value={text}
-          placeholder={working ? 'Add a To Do' : 'Where do you want to go?'}
+          placeholder={pageLoaction == 'work' ? 'Add a To Do' : 'Where do you want to go?'}
           style={styles.input}
         />
         <ScrollView>
           {Object.keys(toDos).map((key) =>
-            toDos[key].work === working ? (
+            toDos[key].pageLocation == pageLoaction ? (
               <View style={styles.toDo} key={key}>
                 <Text style={styles.toDoText}>{toDos[key].text}</Text>
                 <TouchableOpacity onPress={() => deleteTodo(key)}>
