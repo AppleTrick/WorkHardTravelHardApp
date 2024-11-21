@@ -4,6 +4,10 @@ import { theme } from './colors';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Fontisto } from '@expo/vector-icons';
+import { saveItem } from './storage/asyncStorage';
+import Header from './components/Header';
+import { usePageLocation } from './hooks/usePageLocation';
+import { useToDo } from './hooks/useToDo';
 
 interface ToDo {
   text: string;
@@ -16,108 +20,91 @@ const STORAGE_KEY = '@toDos';
 const PAGELOCATION = '@pageLocation';
 
 export default function App() {
-  const [pageLoaction, setPageLoacation] = useState<TPageLocation>('work');
-  const [text, setText] = useState('');
-  const [toDos, setToDos] = useState<Record<string, ToDo>>({});
+  // const [pageLoaction, setPageLoacation] = useState<TPageLocation>('work');
+  // const [text, setText] = useState('');
+  // const [toDos, setToDos] = useState<Record<string, ToDo>>({});
 
-  const travel = async () => {
-    setPageLoacation('travel');
-    try {
-      await AsyncStorage.setItem(PAGELOCATION, JSON.stringify('travel'));
-    } catch (error) {
-      /// save error
-    }
-  };
+  // const travel = async () => {
+  //   setPageLoacation('travel');
+  //   saveItem(PAGELOCATION, 'travel');
+  // };
 
-  const work = async () => {
-    setPageLoacation('work');
-    try {
-      await AsyncStorage.setItem(PAGELOCATION, JSON.stringify('work'));
-    } catch (error) {
-      /// save error
-    }
-  };
-  const onChangeText = (payload: string) => setText(payload);
+  // const work = async () => {
+  //   setPageLoacation('work');
+  //   saveItem(PAGELOCATION, 'work');
+  // };
 
-  const saveToDos = async (toSave: Record<string, ToDo>) => {
-    try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-    } catch (error) {
-      /// save error
-    }
-  };
+  // const onChangeText = (payload: string) => setText(payload);
 
-  const loadToDos = async () => {
-    try {
-      const s = await AsyncStorage.getItem(STORAGE_KEY);
-      if (s) {
-        setToDos(JSON.parse(s));
-      } else {
-        setToDos({}); // 또는 초기값 설정
-      }
-    } catch (error) {
-      console.error('Failed to load todos:', error);
-      setToDos({}); // 에러 발생 시 초기값 설정
-    }
+  // const saveToDos = async (toSave: Record<string, ToDo>) => {
+  //   saveItem(STORAGE_KEY, toSave);
+  // };
 
-    try {
-      const location = await AsyncStorage.getItem(PAGELOCATION);
-      if (location) {
-        setPageLoacation(JSON.parse(location));
-      } else {
-        setPageLoacation('work'); // 또는 초기값 설정
-      }
-    } catch (error) {
-      console.error('Failed to load todos:', error);
-      setPageLoacation('work'); // 에러 발생 시 초기값 설정
-    }
-  };
+  // const loadToDos = async () => {
+  //   try {
+  //     const s = await AsyncStorage.getItem(STORAGE_KEY);
+  //     if (s) {
+  //       setToDos(JSON.parse(s));
+  //     } else {
+  //       setToDos({}); // 또는 초기값 설정
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to load todos:', error);
+  //     setToDos({}); // 에러 발생 시 초기값 설정
+  //   }
 
-  useEffect(() => {
-    loadToDos();
-  }, []);
+  //   try {
+  //     const location = await AsyncStorage.getItem(PAGELOCATION);
+  //     if (location) {
+  //       setPageLoacation(JSON.parse(location));
+  //     } else {
+  //       setPageLoacation('work'); // 또는 초기값 설정
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to load todos:', error);
+  //     setPageLoacation('work'); // 에러 발생 시 초기값 설정
+  //   }
+  // };
 
-  const addToDo = async () => {
-    if (text == '') {
-      return;
-    }
-    const newToDos = { ...toDos, [Date.now()]: { text, pageLocation: pageLoaction } };
-    setToDos(newToDos);
-    await saveToDos(newToDos);
-    setText('');
-  };
+  // useEffect(() => {
+  //   loadToDos();
+  // }, []);
 
-  const deleteTodo = (key: string) => {
-    Alert.alert('Delete To Do?', 'Are you sure?', [
-      { text: '취소' },
-      {
-        text: '확인',
-        style: 'destructive',
-        onPress: async () => {
-          const newToDos = { ...toDos };
-          delete newToDos['1732179583064'];
-          setToDos(newToDos);
-          await saveToDos(newToDos);
-        },
-      },
-    ]);
-  };
+  // const addToDo = async () => {
+  //   if (text == '') {
+  //     return;
+  //   }
+  //   const newToDos = { ...toDos, [Date.now()]: { text, pageLocation: pageLoaction } };
+  //   setToDos(newToDos);
+  //   await saveToDos(newToDos);
+  //   setText('');
+  // };
 
-  console.log(toDos);
-  console.log(pageLoaction);
+  // const deleteTodo = (key: string) => {
+  //   Alert.alert('Delete To Do?', 'Are you sure?', [
+  //     { text: '취소' },
+  //     {
+  //       text: '확인',
+  //       style: 'destructive',
+  //       onPress: async () => {
+  //         const newToDos = { ...toDos };
+  //         delete newToDos['1732179583064'];
+  //         setToDos(newToDos);
+  //         await saveToDos(newToDos);
+  //       },
+  //     },
+  //   ]);
+  // };
+
+  const { pageLocation, switchLocation } = usePageLocation();
+  const { toDos, text, setText, addToDo, deleteToDo } = useToDo();
 
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <View style={styles.header}>
-        <TouchableOpacity onPress={work}>
-          <Text style={{ ...styles.btnText, color: pageLoaction === 'work' ? 'white' : theme.grey }}>Work</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={travel}>
-          <Text style={{ ...styles.btnText, color: pageLoaction === 'travel' ? 'white' : theme.grey }}>Travel</Text>
-        </TouchableOpacity>
-      </View>
+      <Header onSwitch={switchLocation} pageLocation={pageLocation} />
       <View>
+        {/* TextInput */}
         <TextInput
           returnKeyType="done"
           keyboardType="default"
@@ -127,6 +114,7 @@ export default function App() {
           placeholder={pageLoaction == 'work' ? 'Add a To Do' : 'Where do you want to go?'}
           style={styles.input}
         />
+        {/* ToDoList */}
         <ScrollView>
           {Object.keys(toDos).map((key) =>
             toDos[key].pageLocation == pageLoaction ? (
