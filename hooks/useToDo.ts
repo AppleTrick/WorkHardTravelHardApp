@@ -38,5 +38,13 @@ export const useToDo = () => {
     await saveToDos(newToDos);
   };
 
-  return { toDos, text, setText, addToDo, deleteToDo, completeToDo };
+  const editToDo = async (text: string, key: string) => {
+    if (text == '') return;
+    const newToDos = { ...toDos };
+    newToDos[key] = { ...newToDos[key], text: text };
+    setToDos(newToDos);
+    await saveToDos(newToDos);
+  };
+
+  return { toDos, text, setText, addToDo, deleteToDo, completeToDo, editToDo };
 };

@@ -9,7 +9,7 @@ import ToDoList from './components/ToDoList';
 
 export default function App() {
   const { pageLocation, switchLocation } = usePageLocation();
-  const { toDos, text, setText, addToDo, deleteToDo, completeToDo } = useToDo();
+  const { toDos, text, setText, addToDo, deleteToDo, completeToDo, editToDo } = useToDo();
 
   console.log(toDos);
 
@@ -18,7 +18,7 @@ export default function App() {
       <StatusBar style="auto" />
       <Header onSwitch={switchLocation} pageLocation={pageLocation} />
       <ToDoInput text={text} setText={setText} onSubmit={() => addToDo(text, pageLocation)} />
-      <ToDoList toDos={toDos} pageLocation={pageLocation} onDelete={deleteToDo} onComplete={completeToDo} />
+      <ToDoList toDos={toDos} pageLocation={pageLocation} onDelete={deleteToDo} onComplete={completeToDo} onEdit={editToDo} />
     </View>
   );
 }
