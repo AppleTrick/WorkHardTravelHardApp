@@ -5,12 +5,13 @@ interface Props {
   text: string;
   setText: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: () => void;
+  changeStyle?: any;
 }
 
-const ToDoInput: React.FC<Props> = ({ text, setText, onSubmit }) => {
+const ToDoInput: React.FC<Props> = ({ text, setText, onSubmit, changeStyle }) => {
   return (
     <TextInput
-      style={styles.input}
+      style={changeStyle || styles.input}
       returnKeyType="done"
       keyboardType="default"
       onSubmitEditing={onSubmit}

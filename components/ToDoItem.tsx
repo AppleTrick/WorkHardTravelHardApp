@@ -4,7 +4,6 @@ import { FontAwesome } from '@expo/vector-icons/';
 import { theme } from '../colors';
 import { useIsEdit } from '../hooks/useIsEdit';
 import ToDoInput from './ToDoInput';
-import { useToDo } from '../hooks/useToDo';
 
 interface Props {
   id: string;
@@ -15,7 +14,7 @@ interface Props {
 }
 
 const ToDoItem: React.FC<Props> = ({ toDos, id, deleteTodo, completeTodo, editTodo }) => {
-  const { isEdit, setIsEdit, editText, setEditText } = useIsEdit(toDos[id].text);
+  const { isEdit, setIsEdit, editText, setEditText } = useIsEdit(toDos[id]?.text || '');
 
   const EditSubmit = () => {
     editTodo(editText, id);
@@ -25,10 +24,10 @@ const ToDoItem: React.FC<Props> = ({ toDos, id, deleteTodo, completeTodo, editTo
   return (
     <>
       {isEdit ? (
-        <ToDoInput text={editText} setText={setEditText} key={id} onSubmit={EditSubmit} />
+        <ToDoInput text={editText} setText={setEditText} key={id} onSubmit={EditSubmit} changeStyle={styles.input} />
       ) : (
-        <TouchableOpacity onPress={() => completeTodo(id)}>
-          <View style={styles.toDo}>
+        <View>
+          <TouchableOpacity onPress={() => completeTodo(id)} style={styles.toDo}>
             {toDos[id].complete ? <FontAwesome name="check-square-o" size={24} color="red" /> : <FontAwesome name="square-o" size={24} color={theme.grey} />}
             <Text style={[styles.toDoText, toDos[id].complete && styles.completedText]}>{toDos[id].text}</Text>
             <TouchableOpacity onPress={() => setIsEdit(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
@@ -37,14 +36,22 @@ const ToDoItem: React.FC<Props> = ({ toDos, id, deleteTodo, completeTodo, editTo
             <TouchableOpacity onPress={() => deleteTodo(id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
               <Fontisto name="trash" size={18} color={theme.grey} />
             </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
       )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  input: {
+    backgroundColor: 'white',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+    marginBottom: 10,
+    fontSize: 18,
+  },
   toDo: {
     backgroundColor: theme.toDoBg,
     marginBottom: 10,
@@ -57,7 +64,7 @@ const styles = StyleSheet.create({
   },
   toDoText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '500',
   },
   completedText: {
