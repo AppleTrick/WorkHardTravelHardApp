@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 interface Props {
   text: string;
@@ -10,25 +10,24 @@ interface Props {
 
 const ToDoInput: React.FC<Props> = ({ text, setText, onSubmit, changeStyle }) => {
   return (
-    <TextInput
-      style={changeStyle || styles.input}
-      returnKeyType="done"
-      keyboardType="default"
-      onSubmitEditing={onSubmit}
-      onChangeText={setText}
-      value={text}
-      // placeholder={pageLoaction == 'work' ? 'Add a To Do' : 'Where do you want to go?'}
-    />
+    <View style={styles.inputContainer}>
+      <TextInput style={changeStyle || styles.input} returnKeyType="done" keyboardType="default" onSubmitEditing={onSubmit} onChangeText={setText} value={text} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  inputContainer: {
+    height: 60,
+    marginVertical: 20,
+  },
   input: {
+    height: '100%',
     backgroundColor: 'white',
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    marginVertical: 20,
+    // marginVertical: 20,
     fontSize: 18,
   },
 });

@@ -4,6 +4,7 @@ import { FontAwesome } from '@expo/vector-icons/';
 import { theme } from '../colors';
 import { useIsEdit } from '../hooks/useIsEdit';
 import ToDoInput from './ToDoInput';
+import ToDoInputEdit from './ToDoInputEdit';
 
 interface Props {
   id: string;
@@ -24,19 +25,23 @@ const ToDoItem: React.FC<Props> = ({ toDos, id, deleteTodo, completeTodo, editTo
   return (
     <>
       {isEdit ? (
-        <ToDoInput text={editText} setText={setEditText} key={id} onSubmit={EditSubmit} changeStyle={styles.input} />
+        <ToDoInputEdit text={editText} setText={setEditText} key={id} onSubmit={EditSubmit} />
       ) : (
-        <View>
-          <TouchableOpacity onPress={() => completeTodo(id)} style={styles.toDo}>
-            {toDos[id].complete ? <FontAwesome name="check-square-o" size={24} color="red" /> : <FontAwesome name="square-o" size={24} color={theme.grey} />}
+        <View style={styles.toDo}>
+          <View style={styles.actionButtons}>
+            <TouchableOpacity onPress={() => completeTodo(id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+              {toDos[id].complete ? <FontAwesome name="check-square-o" size={24} color="red" /> : <FontAwesome name="square-o" size={24} color="white" />}
+            </TouchableOpacity>
             <Text style={[styles.toDoText, toDos[id].complete && styles.completedText]}>{toDos[id].text}</Text>
-            <TouchableOpacity onPress={() => setIsEdit(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <FontAwesome name="edit" size={24} color="blue" />
+          </View>
+          <View style={styles.actionButtons}>
+            <TouchableOpacity style={styles.actionButton} onPress={() => setIsEdit(true)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+              <FontAwesome name="edit" size={24} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteTodo(id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-              <Fontisto name="trash" size={18} color={theme.grey} />
+            <TouchableOpacity style={styles.actionButton} onPress={() => deleteTodo(id)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+              <Fontisto name="trash" size={18} color="white" />
             </TouchableOpacity>
-          </TouchableOpacity>
+          </View>
         </View>
       )}
     </>
@@ -44,14 +49,6 @@ const ToDoItem: React.FC<Props> = ({ toDos, id, deleteTodo, completeTodo, editTo
 };
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: 'white',
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    borderRadius: 15,
-    marginBottom: 10,
-    fontSize: 18,
-  },
   toDo: {
     backgroundColor: theme.toDoBg,
     marginBottom: 10,
@@ -62,10 +59,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  actionButton: {
+    // backgroundColor: 'blue',
+    padding: 5,
+    marginLeft: 10,
+  },
   toDoText: {
     color: 'white',
     fontSize: 18,
     fontWeight: '500',
+    marginLeft: 15,
   },
   completedText: {
     textDecorationLine: 'line-through',
