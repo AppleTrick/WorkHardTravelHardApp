@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
   },
 
   actionButton: {
-    // backgroundColor: 'blue',
     padding: 5,
     marginLeft: 10,
   },

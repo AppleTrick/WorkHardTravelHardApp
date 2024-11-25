@@ -16,7 +16,7 @@ export const useToDo = () => {
     })();
   }, []);
 
-  const addToDo = async (text: string, pageLocation: 'work' | 'travel') => {
+  const addToDo = async (text: string, pageLocation: string) => {
     if (text === '') return;
     const newToDos = { ...toDos, [Date.now()]: { text, pageLocation, complete: false } };
     setToDos(newToDos);
