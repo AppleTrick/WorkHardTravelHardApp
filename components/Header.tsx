@@ -1,31 +1,29 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { theme } from '../colors';
+import { View, TouchableOpacity, Text, StyleSheet, ScrollView } from 'react-native';
+import HeaderItem from './HeaderItem';
 
 interface Props {
   pageLocation: string;
   onSwitch: (location: string) => void;
+  locationList: Record<string, any>;
 }
 
-const Header: React.FC<Props> = ({ pageLocation, onSwitch }) => (
+const Header: React.FC<Props> = ({ pageLocation, onSwitch, locationList }) => (
   <View style={styles.header}>
-    <TouchableOpacity onPress={() => onSwitch('work')}>
-      <Text style={{ ...styles.btnText, color: pageLocation === 'work' ? 'white' : theme.grey }}>All</Text>
-    </TouchableOpacity>
-    {/* <TouchableOpacity onPress={() => onSwitch('work')}>
-      <Text style={{ ...styles.btnText, color: pageLocation === 'work' ? 'white' : theme.grey }}>Work</Text>
-    </TouchableOpacity> */}
-    <TouchableOpacity onPress={() => onSwitch('travel')}>
-      <Text style={{ ...styles.btnText, color: pageLocation === 'travel' ? 'white' : theme.grey }}>Travel</Text>
-    </TouchableOpacity>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      {Object.keys(locationList).map((key) => (
+        <HeaderItem key={key} id={key} pageLocation={pageLocation} locationName={locationList[key].ListName} onSwitch={onSwitch} />
+      ))}
+    </ScrollView>
   </View>
 );
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 100,
-    justifyContent: 'space-between',
+    marginTop: 40,
+    justifyContent: 'space-around',
     flexDirection: 'row',
+    paddingHorizontal: 10,
   },
   btnText: {
     fontSize: 38,

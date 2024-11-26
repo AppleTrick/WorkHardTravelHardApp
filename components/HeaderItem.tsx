@@ -1,14 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { theme } from '../colors';
 
 interface Props {
   id: string;
-  location: string;
+  locationName: string;
+  pageLocation: string;
+  onSwitch: (location: string) => void;
 }
 
-const HeaderItem: React.FC<Props> = ({ id, location }) => {
+const HeaderItem: React.FC<Props> = ({ id, locationName, onSwitch, pageLocation }) => {
   return (
-    <TouchableOpacity onPress={() => onSwitch('work')}>
-      <Text style={{ ...styles.btnText, color: pageLocation === 'work' ? 'white' : theme.grey }}>Work</Text>
+    <TouchableOpacity onPress={() => onSwitch(locationName)}>
+      <Text style={{ ...styles.btnText, color: pageLocation == locationName ? 'white' : theme.grey }}>{locationName}</Text>
     </TouchableOpacity>
   );
 };

@@ -11,38 +11,52 @@ export const usePageLocation = () => {
   const [pageLocation, setPageLocation] = useState<string>('All');
 
   useEffect(() => {
-    // 위치리스트들 가지고오기
     (async () => {
       const savedLocationList = await loadLocationList();
-      setLocationList(savedLocationList);
-    })();
+      if (Object.keys(savedLocationList).length === 0) {
+        const newLocationList = {
+          [Date.now()]: {
+            ListName: 'ALL',
+          },
+        };
+        setLocationList(newLocationList);
+        await saveLocationList(newLocationList);
+      } else {
+        setLocationList(savedLocationList);
+      }
 
-    // 선택한 위치 가지고오기
-    (async () => {
+      // 선택한 위치 가지고오기
       const savedLocation = await loadPageLocation();
       setPageLocation(savedLocation);
     })();
   }, []);
 
-  const AddLocaiton = async (text: string) => {
+  const addLocation = async (text: string) => {
     if (text == '') return;
-    const newLocationList = {
-      ...locationList,
-      [Date.now()]: {
-        ListName: text,
-      },
-    };
-    setLocationList(newLocationList);
-    await saveLocationList(newLocationList);
-    setaddLocationName('');
+    try {
+      const newLocationList = {
+        ...locationList,
+        [Date.now()]: {
+          ListName: text,
+        },
+      };
+
+      await saveLocationList(newLocationList);
+      setLocationList(newLocationList);
+
+      console.log('New Location List:', newLocationList);
+    } catch (error) {
+      console.error('Failed to add location:', error);
+    }
   };
 
   const deleteLocation = () => {};
 
+  // 위치 전환
   const switchLocation = async (location: string) => {
     setPageLocation(location);
     await savePageLocation(location);
   };
 
-  return { pageLocation, switchLocation, addLocationName, setaddLocationName, locationList, setLocationList };
+  return { pageLocation, switchLocation, addLocationName, setaddLocationName, locationList, setLocationList, addLocation };
 };
