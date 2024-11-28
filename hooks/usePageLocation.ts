@@ -49,9 +49,6 @@ export const usePageLocation = () => {
       console.error('Failed to add location:', error);
     }
   };
-
-  const deleteLocation = () => {};
-
   // 위치 전환
   const switchLocation = async (location: string) => {
     setPageLocation(location);

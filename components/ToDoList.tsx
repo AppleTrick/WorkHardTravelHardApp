@@ -13,7 +13,7 @@ const ToDoList: React.FC<Props> = ({ toDos, pageLocation, onDelete, onComplete, 
   return (
     <ScrollView>
       {Object.keys(toDos).map((key) =>
-        toDos[key].pageLocation == pageLocation ? <ToDoItem deleteTodo={onDelete} completeTodo={onComplete} editTodo={onEdit} key={key} id={key} toDos={toDos} /> : null,
+        pageLocation == 'ALL' || toDos[key].pageLocation == pageLocation ? <ToDoItem deleteTodo={onDelete} completeTodo={onComplete} editTodo={onEdit} key={key} id={key} toDos={toDos} /> : null,
       )}
     </ScrollView>
   );

@@ -14,7 +14,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="auto" backgroundColor="white" />
+      <StatusBar style={'light'} backgroundColor="white" translucent={false} hidden={false} />
       <Header onSwitch={switchLocation} pageLocation={pageLocation} locationList={locationList} />
       <ToDoInput text={text} setText={setText} onSubmit={() => addToDo(text, pageLocation)} />
       <ToDoList toDos={toDos} pageLocation={pageLocation} onDelete={deleteToDo} onComplete={completeToDo} onEdit={editToDo} />

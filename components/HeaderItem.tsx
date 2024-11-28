@@ -8,7 +8,7 @@ interface Props {
   onSwitch: (location: string) => void;
 }
 
-const HeaderItem: React.FC<Props> = ({ id, locationName, onSwitch, pageLocation }) => {
+const HeaderItem: React.FC<Props> = ({ locationName, onSwitch, pageLocation }) => {
   return (
     <TouchableOpacity onPress={() => onSwitch(locationName)}>
       <Text style={{ ...styles.btnText, color: pageLocation == locationName ? 'white' : theme.grey }}>{locationName}</Text>
@@ -18,6 +18,7 @@ const HeaderItem: React.FC<Props> = ({ id, locationName, onSwitch, pageLocation 
 
 const styles = StyleSheet.create({
   btnText: {
+    marginRight: 15,
     fontSize: 38,
     fontWeight: '600',
     color: 'white',

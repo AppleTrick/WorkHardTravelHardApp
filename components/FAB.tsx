@@ -36,8 +36,8 @@ const FAB: React.FC<Props> = ({ addLocation }) => {
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
+    bottom: 25,
+    right: 25,
     backgroundColor: '#6200ee',
     width: 56,
     height: 56,

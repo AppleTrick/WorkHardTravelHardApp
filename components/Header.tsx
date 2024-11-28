@@ -20,15 +20,11 @@ const Header: React.FC<Props> = ({ pageLocation, onSwitch, locationList }) => (
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 40,
+    // backgroundColor: 'red',
+    marginTop: 60,
     justifyContent: 'space-around',
     flexDirection: 'row',
     paddingHorizontal: 10,
-  },
-  btnText: {
-    fontSize: 38,
-    fontWeight: '600',
-    color: 'white',
   },
 });
 export default Header;
